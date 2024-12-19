@@ -1,0 +1,24 @@
+services:
+
+  capsule: &capsule
+    image: haiku-rv-capsule
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  builder: 
+    <<: *capsule
+    volumes:
+      - "./io:/io:rw"
+      - "./BUILD.sh:/BUILD.sh:ro"
+    command: /bin/bash /BUILD.sh /io
+
+  shell: &shell
+    <<: *capsule
+    hostname: rv-shell
+    stdin_open: true
+    tty: true
+    volumes:
+      - "./io:/io:rw"
+      - "./BUILD.sh:/BUILD.sh:ro"
+    command: /bin/bash --login
